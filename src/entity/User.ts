@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm"
-import { Articles } from "./Articles"
+import { Article } from "./Article"
 
 export enum GenderType {
     Male = "Male",
     Female = "Female",
 }
 @Entity()
-export class Users {
+export class User {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -37,7 +37,7 @@ export class Users {
     })
     is_admin: boolean
 
-    @OneToMany(() => Articles, (article) => article.user)
-    articles: Articles[]
+    @OneToMany(() => Article, (article) => article.user)
+    articles: Article[]
 
 }

@@ -1,19 +1,19 @@
 import { AppDataSource } from "../data-source"
-import { Candidates } from "../entity/Candidates"
-import { Users } from "../entity/Users"
-import { Voters } from "../entity/Voters"
+import { Candidate } from "../entity/Candidate"
+import { User } from "../entity/User"
+import { Voter } from "../entity/Voter"
 
 interface IVoters {
-    userId: Users
-    paslonId: Candidates
+    userId: User
+    paslonId: Candidate
 }
 
-const voterRepo = AppDataSource.getRepository(Voters)
+const voterRepo = AppDataSource.getRepository(Voter)
 export default new class VotersServices {
     async create(reqBody: IVoters) : Promise<any> {
         try {
             const {userId, paslonId} = reqBody
-            const voter = new Voters()
+            const voter = new Voter()
             voter.user = userId,
             voter.candidate = paslonId,
 

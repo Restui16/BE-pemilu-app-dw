@@ -1,10 +1,10 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { Users } from "./entity/Users"
-import { Articles } from "./entity/Articles"
-import { Parties } from "./entity/Parties"
-import { Candidates } from "./entity/Candidates"
-import { Voters } from "./entity/Voters"
+import { User } from "./entity/User"
+import { Article } from "./entity/Article"
+import { Party } from "./entity/Party"
+import { Candidate} from "./entity/Candidate"
+import { Voter } from "./entity/Voter"
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -15,7 +15,7 @@ export const AppDataSource = new DataSource({
     database: "micro-app-pemilu-dw",
     synchronize: true,
     logging: false,
-    entities: [Users, Articles, Candidates, Parties, Voters],
+    entities: [User, Article, Party, Candidate, Voter],
     migrations: [],
     subscribers: [],
 })

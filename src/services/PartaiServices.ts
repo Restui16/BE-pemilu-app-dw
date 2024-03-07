@@ -1,6 +1,6 @@
 import { AppDataSource } from "../data-source"
-import { Parties } from "../entity/Parties"
-import { Candidates } from "../entity/Candidates"
+import { Party } from "../entity/Party"
+import { Candidate } from "../entity/Candidate"
 
 interface IPartai {
     logo: string,
@@ -8,16 +8,16 @@ interface IPartai {
     ketum: string,
     visiMisi: string[]
     address: string
-    paslonId: Candidates
+    paslonId: Candidate
 }
 
-const partaiRepo = AppDataSource.getRepository(Parties)
+const partaiRepo = AppDataSource.getRepository(Party)
 export default new class PartaiServices {
     async create(reqBody: IPartai) : Promise<any> {
         try {
             const {logo, name, ketum, visiMisi, address, paslonId} = reqBody
 
-            const partai = new Parties()
+            const partai = new Party()
             partai.logo = logo
             partai.name = name
             partai.ketum = ketum

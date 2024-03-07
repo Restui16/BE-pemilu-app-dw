@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
-import { Users } from "./Users"
+import { User } from "./User"
 
 @Entity()
-export class Articles {
+export class Article {
     
     @PrimaryGeneratedColumn()
     id: number
@@ -18,10 +18,10 @@ export class Articles {
     })
     description: string
 
-    @ManyToOne(() => Users, (user) => user.articles, {
+    @ManyToOne(() => User, (user) => user.articles, {
         cascade: ["remove"],
         onDelete: "SET NULL"
     })
-    user: Users
+    user: User
 
 }

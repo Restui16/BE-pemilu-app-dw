@@ -1,5 +1,5 @@
 import { AppDataSource } from "../data-source"
-import { Candidates } from "../entity/Candidates"
+import { Candidate } from "../entity/Candidate"
 
 interface IPaslon {
     id: number
@@ -8,12 +8,12 @@ interface IPaslon {
     visiMisi: string[]
 }
 
-const paslonRepo = AppDataSource.getRepository(Candidates)
+const paslonRepo = AppDataSource.getRepository(Candidate)
 export default new class PaslonServices {
     async create(reqBody: IPaslon): Promise<any> {
         try {
             const {id, name, image, visiMisi} = reqBody
-            const paslon = new Candidates()
+            const paslon = new Candidate()
             paslon.id = id
             paslon.name = name
             paslon.image = image
@@ -28,7 +28,7 @@ export default new class PaslonServices {
 
     async find(): Promise<any> {
         try {
-            const paslon = await paslonRepo.find({relations: {party: true}})
+            const paslon = await paslonRepo.find({relations: {parties: true}})
             return paslon
         } catch (error) {
             throw error
