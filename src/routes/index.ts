@@ -1,9 +1,9 @@
-import * as express from "express"
+import express from "express"
 import UserController from "../controllers/UserController"
 import ArticleController from "../controllers/ArticleController"
-import PaslonController from "../controllers/PaslonController"
 import PartaiController from "../controllers/PartaiController"
 import VoterController from "../controllers/VoterController"
+import CandidateController from "../controllers/CandidateController"
 
 const Route = express.Router()
 
@@ -18,10 +18,10 @@ Route.put("/article/update/:id", ArticleController.update)
 Route.delete("/article/delete/:id", ArticleController.delete)
 Route.get("/article/detail/:id", ArticleController.show)
 
-Route.post("/paslon", PaslonController.create)
-Route.get("/paslon", PaslonController.find)
-Route.put("/paslon/update/:id", PaslonController.update)
-Route.delete("/paslon/delete/:id", PaslonController.delete)
+Route.post("/candidate", CandidateController.create)
+Route.get("/candidate", CandidateController.find)
+Route.put("/candidate/update/:id", CandidateController.update)
+Route.delete("/candidate/delete/:id", CandidateController.delete)
 
 Route.post("/partai", PartaiController.create)
 Route.get("/partai", PartaiController.find)

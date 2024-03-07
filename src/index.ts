@@ -1,6 +1,6 @@
 import { AppDataSource } from "./data-source"
 import express, { Request, Response } from "express"
-import { User } from "./entity/User"
+import { Users } from "./entity/Users"
 import Route from "./routes"
 
 const app = express()

@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
-import { Paslon } from "./Paslon"
+import { Candidates } from "./Candidates"
 
 @Entity()
-export class Partai {
+export class Parties {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -22,6 +22,6 @@ export class Partai {
     @Column({type: "text"})
     address: string
 
-    @ManyToOne(() => Paslon, (paslon) => paslon.partai)
-    paslon: Paslon
+    @ManyToOne(() => Candidates, (candidate) => candidate.party)
+    candidate: Candidates
 }

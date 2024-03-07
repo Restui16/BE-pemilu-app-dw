@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
-import { Partai } from "./Partai"
+import { Parties } from "./Parties"
 
 @Entity()
-export class Paslon {
+export class Candidates {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -15,6 +15,6 @@ export class Paslon {
     @Column({type: "text" , array: true})
     visiMisi: string[]
     
-    @OneToMany(() => Partai, (partai) => partai.paslon)
-    partai: Partai[]
+    @OneToMany(() => Parties, (party) => party.candidate)
+    party: Parties[]
 }

@@ -1,6 +1,6 @@
 import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm"
-import { User } from "./User"
-import { Paslon } from "./Paslon"
+import { Users } from "./Users"
+import { Candidates } from "./Candidates"
 
 @Entity()
 export class Voters {
@@ -8,11 +8,11 @@ export class Voters {
     @PrimaryGeneratedColumn()
     id: number
 
-    @OneToOne(() => User)
+    @OneToOne(() => Users)
     @JoinColumn()
-    user: User
+    user: Users
 
-    @OneToOne(() => Paslon)
+    @OneToOne(() => Candidates)
     @JoinColumn()
-    paslon: Paslon
+    candidate: Candidates
 }

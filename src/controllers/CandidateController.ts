@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import PaslonServices from "../services/PaslonServices";
 
-export default new class PaslonController {
+export default new class CandidateController {
     async create(req: Request, res: Response): Promise<Response>{
         try {
             const data = req.body

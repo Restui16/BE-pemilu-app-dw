@@ -1,5 +1,5 @@
 import { AppDataSource } from "../data-source"
-import { GenderType, User } from "../entity/User"
+import { GenderType, Users } from "../entity/Users"
 import { Equal } from "typeorm"
 import { Encrypt } from "../helpers/Encrypt"
 
@@ -18,7 +18,7 @@ export default new class UserServices {
         try {
             const {fullname, address, gender, username, password, is_admin} = reqBody
             const ecncryptedPassword = await Encrypt.encryptPass(password)
-            const user = new User()
+            const user = new Users()
             user.fullname = fullname
             user.address = address
             user.gender = gender
@@ -26,9 +26,9 @@ export default new class UserServices {
             user.password = ecncryptedPassword
             user.is_admin = is_admin
 
-            const userRepository = AppDataSource.getRepository(User)
+            const userRepository = AppDataSource.getRepository(Users)
             await userRepository.save(user)
-
+            return user
         } catch (error) {
             throw error
         }
@@ -36,7 +36,7 @@ export default new class UserServices {
 
     async find(): Promise<any> {
         try {
-            const users = AppDataSource.getRepository(User)
+            const users = AppDataSource.getRepository(Users)
 
             return users.find()
         } catch (error) {
@@ -46,11 +46,11 @@ export default new class UserServices {
 
     async update(userId: any, reqBody: any): Promise<any> {
         try {
-            const repository = AppDataSource.getRepository(User)
+            const repository = AppDataSource.getRepository(Users)
 
             await repository
                 .createQueryBuilder()
-                .update(User)
+                .update(Users)
                 .set({
                     fullname: reqBody.fullname,
                     address: reqBody.address,
@@ -72,12 +72,12 @@ export default new class UserServices {
 
     async delete(userId: any): Promise<any> {
         try {
-            const repository = AppDataSource.getRepository(User)
+            const repository = AppDataSource.getRepository(Users)
 
             await repository
                 .createQueryBuilder()
                 .delete()
-                .from(User)
+                .from(Users)
                 .where("id = :id", { id: userId })
                 .execute()
 

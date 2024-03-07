@@ -1,15 +1,15 @@
 import { AppDataSource } from "../data-source"
-import { Article } from "../entity/Article"
-import { User } from "../entity/User"
+import { Articles } from "../entity/Articles"
+import { Users } from "../entity/Users"
 
 interface IArticle {
     title: string
     image: string
     description: string
-    user: User
+    user: Users
 }
 
-const articleRepo = AppDataSource.getRepository(Article)
+const articleRepo = AppDataSource.getRepository(Articles)
 
 export default new class ArticleServices {
     async create(reqBody: IArticle): Promise<any> {
@@ -25,7 +25,7 @@ export default new class ArticleServices {
             await AppDataSource
                 .createQueryBuilder()
                 .insert()
-                .into(Article)
+                .into(Articles)
                 .values(article)
                 .execute()
 

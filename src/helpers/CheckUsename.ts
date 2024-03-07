@@ -1,8 +1,8 @@
 import { AppDataSource } from "../data-source";
-import { User } from "../entity/User";
+import { Users } from "../entity/Users";
 
 export async function checkUsernameInUse(username: string) : Promise<boolean> {
-    const userRepository = AppDataSource.getRepository(User)
+    const userRepository = AppDataSource.getRepository(Users)
 
     const existingUser = await userRepository.findOne({where: {username}})
 
