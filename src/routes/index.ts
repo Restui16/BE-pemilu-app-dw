@@ -16,7 +16,7 @@ Route.post("/article", ArticleController.create)
 Route.get("/article", ArticleController.find)
 Route.put("/article/update/:id", ArticleController.update)
 Route.delete("/article/delete/:id", ArticleController.delete)
-Route.get("/article/detail/:id", ArticleController.show)
+Route.get("/article/:id", ArticleController.getArticle)
 
 Route.post("/candidate", CandidateController.create)
 Route.get("/candidate", CandidateController.find)

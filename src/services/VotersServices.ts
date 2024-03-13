@@ -5,17 +5,17 @@ import { Voter } from "../entity/Voter"
 
 interface IVoters {
     userId: User
-    paslonId: Candidate
+    candidateId: Candidate
 }
 
 const voterRepo = AppDataSource.getRepository(Voter)
 export default new class VotersServices {
     async create(reqBody: IVoters) : Promise<any> {
         try {
-            const {userId, paslonId} = reqBody
+            const {userId, candidateId} = reqBody
             const voter = new Voter()
             voter.user = userId,
-            voter.candidate = paslonId,
+            voter.candidate = candidateId,
 
             await voterRepo.save(voter)
             return voter
@@ -33,10 +33,10 @@ export default new class VotersServices {
     }
     async update(id: number, reqBody: IVoters) : Promise<any> {
         try {
-            const {userId, paslonId} = reqBody
+            const {userId, candidateId} = reqBody
             const voter = await voterRepo.findOne({where: {id}, relations: {user: true, candidate:true}})
             voter.user = userId,
-            voter.candidate = paslonId
+            voter.candidate = candidateId
 
             await voterRepo.save(voter)
             return voter

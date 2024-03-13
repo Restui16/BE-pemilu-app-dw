@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { Candidate } from "./Candidate"
 
 @Entity()
@@ -24,4 +24,13 @@ export class Party {
 
     @ManyToOne(() => Candidate, (candidate) => candidate.parties)
     candidate: Candidate
+
+    @CreateDateColumn()
+    created_at: Date
+
+    @UpdateDateColumn()
+    updated_at: Date
+
+    @DeleteDateColumn()
+    deleted_at: Date
 }

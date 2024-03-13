@@ -28,7 +28,7 @@ export default new class ArticleServices {
                 .into(Article)
                 .values(article)
                 .execute()
-
+            return article
         } catch (error) {
             throw error
         }
@@ -36,7 +36,7 @@ export default new class ArticleServices {
 
     async find(): Promise<any> {
         try {
-            return articleRepo.find({
+            return await articleRepo.find({
                 relations: {
                     user: true
                 }
@@ -46,9 +46,9 @@ export default new class ArticleServices {
         }
     }
 
-    async show(id: any): Promise<any> {
+    async getArticle(id: any): Promise<any> {
         try {
-            const article = await articleRepo.findOne({where: {id}, relations: {user: true}})
+            const article = await articleRepo.findOne({ where: { id }, relations: { user: true } })
             return article
         } catch (error) {
             throw error
@@ -57,8 +57,8 @@ export default new class ArticleServices {
 
     async update(id: number, reqBody: IArticle): Promise<any> {
         try {
-            const {title, image, description, user} = reqBody
-            const article = await articleRepo.findOne({where: {id}})
+            const { title, image, description, user } = reqBody
+            const article = await articleRepo.findOne({ where: { id } })
             article.title = title
             article.image = image
             article.description = description
@@ -71,9 +71,9 @@ export default new class ArticleServices {
         }
     }
 
-    async delete(id: number) : Promise<any> {
+    async delete(id: number): Promise<any> {
         try {
-            const article = await articleRepo.findOne({where: {id}})
+            const article = await articleRepo.findOne({ where: { id } })
             await articleRepo.remove(article)
         } catch (error) {
             throw error

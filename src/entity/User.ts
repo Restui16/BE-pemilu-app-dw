@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn} from "typeorm"
 import { Article } from "./Article"
 
 export enum GenderType {
@@ -39,5 +39,14 @@ export class User {
 
     @OneToMany(() => Article, (article) => article.user)
     articles: Article[]
+
+    @CreateDateColumn()
+    created_at: Date
+
+    @UpdateDateColumn()
+    updated_at: Date
+
+    @DeleteDateColumn()
+    deleted_at: Date
 
 }

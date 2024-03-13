@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import PaslonServices from "../services/PaslonServices";
+import CandidateServices from "../services/CandidateServices";
 
 export default new class CandidateController {
     async create(req: Request, res: Response): Promise<Response>{
         try {
             const data = req.body
-            const paslon = await PaslonServices.create(data)
+            const paslon = await CandidateServices.create(data)
 
             return res.status(200).json(paslon)
         } catch (error) {
@@ -15,7 +15,7 @@ export default new class CandidateController {
 
     async find(req: Request, res: Response): Promise<Response>{
         try {
-            const paslon = await PaslonServices.find()
+            const paslon = await CandidateServices.find()
             return res.status(200).json(paslon)
         } catch (error) {
             return res.status(500).json(error)
@@ -26,7 +26,7 @@ export default new class CandidateController {
             const id = parseInt(req.params.id)
             const data = req.body
 
-            const updatePaslon = await PaslonServices.update(id, data)
+            const updatePaslon = await CandidateServices.update(id, data)
 
             return res.status(200).json(updatePaslon)
         } catch (error) {
@@ -36,7 +36,7 @@ export default new class CandidateController {
     async delete(req: Request, res: Response): Promise<Response>{
         try {
             const id = parseInt(req.params.id)
-            await PaslonServices.delete(id)
+            await CandidateServices.delete(id)
             return res.status(200).json({message: `Paslon ${id} berhasil dihapus`})
         } catch (error) {
             return res.status(500).json(error)

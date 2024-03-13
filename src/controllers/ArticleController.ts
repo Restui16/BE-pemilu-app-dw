@@ -6,7 +6,7 @@ export default new class ArticleController {
         try {
             const article = await ArticleServices.create(req.body)
 
-            return res.status(200).json({ message: "Article Berhasil dibuat", article })
+            return res.status(200).json(article)
         } catch (error) {
             return res.status(500).json({ message: error })
         }
@@ -21,10 +21,10 @@ export default new class ArticleController {
         }
     }
 
-    async show(req: Request, res: Response): Promise<Response> {
+    async getArticle(req: Request, res: Response): Promise<Response> {
         try {
             const id = req.params.id
-            const article = await ArticleServices.show(id)
+            const article = await ArticleServices.getArticle(id)
 
             return res.status(200).json(article)
         } catch (error) {

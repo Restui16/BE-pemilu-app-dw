@@ -25,6 +25,7 @@ export default new class UserServices {
             user.username = username
             user.password = ecncryptedPassword
             user.is_admin = is_admin
+            user.created_at = new Date()
 
             const userRepository = AppDataSource.getRepository(User)
             await userRepository.save(user)
@@ -57,7 +58,8 @@ export default new class UserServices {
                     gender: reqBody.gender,
                     username: reqBody.username,
                     password: reqBody.password,
-                    is_admin: reqBody.is_admin
+                    is_admin: reqBody.is_admin,
+                    updated_at: new Date()
                 })
                 .where("id = :id", { id: userId })
                 .execute()
