@@ -7,23 +7,35 @@ interface ICandidate {
     name: string
     image: string
     visiMisi: string[]
-    
 }
 
-const candidateRepo = AppDataSource.getRepository(Candidate)
 export default new class CandidateServices {
+    private repository = AppDataSource.getRepository(Candidate)
     async create(reqBody: ICandidate): Promise<any> {
         try {
-            const {id, name, image, visiMisi, no_candidate} = reqBody
-            const candidate = new Candidate()
-            candidate.id = id
-            candidate.no_candidate = no_candidate
-            candidate.name = name
-            candidate.image = image
-            candidate.visiMisi = visiMisi
+            const { no_candidate, name, image, visiMisi } = reqBody
+            const candidate = this.repository.create({
+                no_candidate,
+                name,
+                image,
+                visiMisi
+            })
 
-            await candidateRepo.save(candidate)
-            return candidate
+            await this.repository.createQueryBuilder()
+                .insert()
+                .into(Candidate)
+                .values(candidate)
+                .execute()
+
+            const getCandidateWithPartai = await this.repository
+                .createQueryBuilder('candidate')
+                .leftJoinAndSelect('candidate.parties', 'party')
+                .where('candidate.id = :id', { id: candidate.id })
+                .getMany()
+
+
+
+            return getCandidateWithPartai
         } catch (error) {
             throw error
         }
@@ -31,7 +43,9 @@ export default new class CandidateServices {
 
     async find(): Promise<any> {
         try {
-            const candidate = await candidateRepo.find({relations: {parties: true,}})
+            const candidate = await this.repository.createQueryBuilder('candidate')
+                .leftJoinAndSelect('candidate.parties', 'party')
+                .getMany()
             return candidate
         } catch (error) {
             throw error
@@ -40,23 +54,40 @@ export default new class CandidateServices {
 
     async update(id: number, reqBody: ICandidate): Promise<any> {
         try {
-            const {name, image, visiMisi} = reqBody
-            const candidate = await candidateRepo.findOne({where: {id}})
-            candidate.name = name
-            candidate.image = image
-            candidate.visiMisi = visiMisi
+            const { no_candidate, name, image, visiMisi } = reqBody
+            const candidate = this.repository.create({
+                no_candidate,
+                name,
+                image,
+                visiMisi
+            })
 
-            await candidateRepo.save(candidate)
-            return candidate
+            await this.repository.createQueryBuilder()
+                .update(Candidate)
+                .set(candidate)
+                .where('id = :id', { id })
+                .execute()
+
+            const getCandidateWithPartai = await this.repository
+                .createQueryBuilder('candidate')
+                .leftJoinAndSelect('candidate.parties', 'party')
+                .where('candidate.id = :id', {id})
+                .getMany()
+
+            return getCandidateWithPartai
         } catch (error) {
             throw error
         }
     }
 
-    async delete(id: number) : Promise<any> {
+    async delete(id: number): Promise<any> {
         try {
-            const candidate = await candidateRepo.findOne({where: {id}})
-            await candidateRepo.remove(candidate)
+            await this.repository.createQueryBuilder()
+            .delete()
+            .from(Candidate)
+            .where('id = :id', {id})
+            .execute()
+
         } catch (error) {
             throw error
         }

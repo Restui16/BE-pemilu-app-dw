@@ -14,7 +14,7 @@ export class Party {
     name: string
     
     @Column()
-    ketum: string
+    chairman: string
     
     @Column({type: "text", array:true})
     visiMisi: string[]

@@ -14,21 +14,27 @@ interface IUser {
 }
 
 export default new class UserServices {
+    private repository = AppDataSource.getRepository(User)
+
     async create(reqBody: IUser): Promise<any> {
         try {
-            const {fullname, address, gender, username, password, is_admin} = reqBody
+            const { fullname, address, gender, username, password, is_admin } = reqBody
             const ecncryptedPassword = await Encrypt.encryptPass(password)
-            const user = new User()
-            user.fullname = fullname
-            user.address = address
-            user.gender = gender
-            user.username = username
-            user.password = ecncryptedPassword
-            user.is_admin = is_admin
-            user.created_at = new Date()
+            const user = this.repository.create({
+                fullname,
+                address,
+                gender,
+                username,
+                password: ecncryptedPassword,
+                is_admin
+            })
 
-            const userRepository = AppDataSource.getRepository(User)
-            await userRepository.save(user)
+            await this.repository.createQueryBuilder()
+            .insert()
+            .into(User)
+            .values(user)
+            .execute()
+
             return user
         } catch (error) {
             throw error
@@ -37,51 +43,49 @@ export default new class UserServices {
 
     async find(): Promise<any> {
         try {
-            const users = AppDataSource.getRepository(User)
+            const users = this.repository.createQueryBuilder()
+            .select("user")
+            .from(User, 'user')
+            .getMany()
 
-            return users.find()
+            return users
         } catch (error) {
             throw error
         }
     }
 
-    async update(userId: any, reqBody: any): Promise<any> {
+    async update(id: any, reqBody: IUser): Promise<any> {
         try {
-            const repository = AppDataSource.getRepository(User)
-
-            await repository
-                .createQueryBuilder()
-                .update(User)
-                .set({
-                    fullname: reqBody.fullname,
-                    address: reqBody.address,
-                    gender: reqBody.gender,
-                    username: reqBody.username,
-                    password: reqBody.password,
-                    is_admin: reqBody.is_admin,
-                    updated_at: new Date()
-                })
-                .where("id = :id", { id: userId })
-                .execute()
-
-            return repository.findBy({
-                id: Equal(userId)
+            const {fullname, address, gender, username, password, is_admin} = reqBody
+            const ecncryptedPassword = await Encrypt.encryptPass(password)
+            const user = this.repository.create({
+                fullname,
+                address,
+                gender,
+                username,
+                password: ecncryptedPassword,
+                is_admin
             })
+
+            await this.repository.createQueryBuilder()
+            .update('user')
+            .set(user)
+            .where('id = :id', {id})
+            .execute()
+
+            return user
         } catch (error) {
             throw error
         }
     }
 
-    async delete(userId: any): Promise<any> {
+    async delete(id: any): Promise<any> {
         try {
-            const repository = AppDataSource.getRepository(User)
-
-            await repository
-                .createQueryBuilder()
-                .delete()
-                .from(User)
-                .where("id = :id", { id: userId })
-                .execute()
+            await this.repository.createQueryBuilder()
+            .delete()
+            .from('user')
+            .where('id = :id', {id})
+            .execute()
 
         } catch (error) {
             throw error

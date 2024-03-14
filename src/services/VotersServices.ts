@@ -5,49 +5,79 @@ import { Voter } from "../entity/Voter"
 
 interface IVoters {
     userId: User
-    candidateId: Candidate
+    candidateId: Candidate[]
 }
 
-const voterRepo = AppDataSource.getRepository(Voter)
 export default new class VotersServices {
-    async create(reqBody: IVoters) : Promise<any> {
+    private repository = AppDataSource.getRepository(Voter)
+    async create(reqBody: IVoters): Promise<any> {
         try {
-            const {userId, candidateId} = reqBody
-            const voter = new Voter()
-            voter.user = userId,
-            voter.candidate = candidateId,
+            const { userId, candidateId } = reqBody
+            const voter = this.repository.create({
+                user: userId,
+                candidate: candidateId
+            })
 
-            await voterRepo.save(voter)
-            return voter
+            await this.repository.createQueryBuilder()
+                .insert()
+                .into(Voter)
+                .values(voter)
+                .execute()
+
+            const getVoter = await this.repository.createQueryBuilder('voter')
+                .leftJoinAndSelect('voter.user', 'user')
+                .leftJoinAndSelect('voter.candidate', 'candidate')
+                .where('voter.id = :id', { id: voter.id })
+                .getMany()
+            return getVoter
         } catch (error) {
             throw error
         }
     }
-    async find() : Promise<any> {
+    async find(): Promise<any> {
         try {
-            const voters = await voterRepo.find({relations: {user: true, candidate: true}})
+            const voters = await this.repository.createQueryBuilder('voter')
+                .leftJoinAndSelect('voter.user', 'user')
+                .leftJoinAndSelect('voter.candidate', 'candidate')
+                .getMany()
+
             return voters
         } catch (error) {
             throw error
         }
     }
-    async update(id: number, reqBody: IVoters) : Promise<any> {
+    async update(id: number, reqBody: IVoters): Promise<any> {
         try {
-            const {userId, candidateId} = reqBody
-            const voter = await voterRepo.findOne({where: {id}, relations: {user: true, candidate:true}})
-            voter.user = userId,
-            voter.candidate = candidateId
+            const { userId, candidateId } = reqBody
+            const voter = this.repository.create({
+                user: userId,
+                candidate: candidateId
+            })
 
-            await voterRepo.save(voter)
-            return voter
+            await this.repository.createQueryBuilder()
+                .update(Voter)
+                .set(voter)
+                .where('id = :id', { id })
+                .execute()
+
+            const getVoter = await this.repository.createQueryBuilder('voter')
+                .leftJoinAndSelect('voter.user', 'user')
+                .leftJoinAndSelect('voter.candidate', 'candidate')
+                .where('voter.id = :id', { id })
+                .getMany()
+
+            return getVoter
         } catch (error) {
             throw error
         }
     }
-    async delete(id: number) : Promise<any> {
+    async delete(id: number): Promise<any> {
         try {
-            const voter = await voterRepo.findOne({where: {id}})
-            await voterRepo.remove(voter)
+            await this.repository.createQueryBuilder()
+            .delete()
+            .from(Voter)
+            .where('id = :id', {id})
+            .execute()
         } catch (error) {
             throw error
         }

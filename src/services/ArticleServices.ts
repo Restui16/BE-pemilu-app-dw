@@ -9,13 +9,12 @@ interface IArticle {
     user: User
 }
 
-const articleRepo = AppDataSource.getRepository(Article)
-
 export default new class ArticleServices {
+    private repository = AppDataSource.getRepository(Article)
     async create(reqBody: IArticle): Promise<any> {
         try {
             const { title, image, description, user } = reqBody
-            const article = articleRepo.create({
+            const article = this.repository.create({
                 title,
                 image,
                 description,
@@ -28,7 +27,15 @@ export default new class ArticleServices {
                 .into(Article)
                 .values(article)
                 .execute()
-            return article
+
+
+            const findArticle = await this.repository
+                .createQueryBuilder('article')
+                .leftJoinAndSelect('article.user', 'user')
+                .where('article.id = :id', { id: article.id })
+                .getMany();
+
+            return findArticle
         } catch (error) {
             throw error
         }
@@ -36,11 +43,12 @@ export default new class ArticleServices {
 
     async find(): Promise<any> {
         try {
-            return await articleRepo.find({
-                relations: {
-                    user: true
-                }
-            })
+            const articles = await this.repository
+                .createQueryBuilder('article')
+                .leftJoinAndSelect('article.user', 'user')
+                .getMany();
+
+            return articles;
         } catch (error) {
             throw error
         }
@@ -48,7 +56,11 @@ export default new class ArticleServices {
 
     async getArticle(id: any): Promise<any> {
         try {
-            const article = await articleRepo.findOne({ where: { id }, relations: { user: true } })
+            const article = await this.repository
+                .createQueryBuilder('article')
+                .leftJoinAndSelect('article.user', 'user')
+                .where('article.id = :id', { id })
+                .getOne()
             return article
         } catch (error) {
             throw error
@@ -58,14 +70,26 @@ export default new class ArticleServices {
     async update(id: number, reqBody: IArticle): Promise<any> {
         try {
             const { title, image, description, user } = reqBody
-            const article = await articleRepo.findOne({ where: { id } })
-            article.title = title
-            article.image = image
-            article.description = description
-            article.user = user
+            const article = this.repository.create({
+                title,
+                image,
+                description,
+                user
+            })
 
-            await articleRepo.save(article)
-            return article
+            await this.repository.createQueryBuilder()
+                .update(Article)
+                .set(article)
+                .where('id = :id', { id })
+                .execute()
+
+            const findArticle = await this.repository
+                .createQueryBuilder('article')
+                .leftJoinAndSelect('article.user', 'user')
+                .where('article.id = :id', {id})
+                .getMany();
+
+            return findArticle
         } catch (error) {
             throw error
         }
@@ -73,8 +97,11 @@ export default new class ArticleServices {
 
     async delete(id: number): Promise<any> {
         try {
-            const article = await articleRepo.findOne({ where: { id } })
-            await articleRepo.remove(article)
+            await this.repository.createQueryBuilder()
+                .delete()
+                .from(Article)
+                .where('id = :id', { id })
+                .execute()
         } catch (error) {
             throw error
         }

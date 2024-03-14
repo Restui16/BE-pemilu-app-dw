@@ -37,7 +37,7 @@ export default new class CandidateController {
         try {
             const id = parseInt(req.params.id)
             await CandidateServices.delete(id)
-            return res.status(200).json({message: `Paslon ${id} berhasil dihapus`})
+            return res.status(200).json({message: `Candidate ${id} berhasil dihapus`})
         } catch (error) {
             return res.status(500).json(error)
         }

@@ -5,61 +5,88 @@ import { Candidate } from "../entity/Candidate"
 interface IPartai {
     logo: string,
     name: string
-    ketum: string,
+    chairman: string,
     visiMisi: string[]
     address: string
-    paslonId: Candidate
+    candidate_id: Candidate
 }
 
-const partaiRepo = AppDataSource.getRepository(Party)
 export default new class PartaiServices {
-    async create(reqBody: IPartai) : Promise<any> {
+    private repository = AppDataSource.getRepository(Party)
+    async create(reqBody: IPartai): Promise<any> {
         try {
-            const {logo, name, ketum, visiMisi, address, paslonId} = reqBody
+            const { logo, name, chairman, visiMisi, address, candidate_id } = reqBody
 
-            const partai = new Party()
-            partai.logo = logo
-            partai.name = name
-            partai.ketum = ketum
-            partai.visiMisi = visiMisi
-            partai.address = address
-            partai.candidate = paslonId
+            const party = this.repository.create({
+                logo,
+                name,
+                chairman,
+                visiMisi,
+                address,
+                candidate: candidate_id
+            })
 
-            await partaiRepo.save(partai)
-            return partai
+            await this.repository.createQueryBuilder()
+                .insert()
+                .into(Party)
+                .values(party)
+                .execute()
+
+            const getPartaiWithCandidate = await this.repository.createQueryBuilder('party')
+                .leftJoinAndSelect('party.candidate', 'candidate')
+                .where('party.id = :id', { id: party.id })
+                .getMany()
+            return getPartaiWithCandidate
         } catch (error) {
             throw error
         }
     }
-    async find() : Promise<any> {
+    async find(): Promise<any> {
         try {
-            const partai = await partaiRepo.find({relations: {candidate: true}})
-            return partai
+            const parties = await this.repository.createQueryBuilder('party')
+                .leftJoinAndSelect('party.candidate', 'candidate')
+                .getMany()
+
+            return parties
         } catch (error) {
             throw error
         }
     }
-    async update(id: number, reqBody: IPartai) : Promise<any> {
+    async update(id: number, reqBody: IPartai): Promise<any> {
         try {
-            const {logo, name, ketum, visiMisi, address, paslonId} = reqBody
-            const partai = await partaiRepo.findOne({where: {id}, relations: {candidate: true}})
-            partai.logo = logo
-            partai.name = name
-            partai.ketum = ketum
-            partai.visiMisi = visiMisi
-            partai.address = address
-            partai.candidate = paslonId
-            
-            await partaiRepo.save(partai)
-            return partai
+            const { logo, name, chairman, visiMisi, address, candidate_id } = reqBody
+            const party = this.repository.create({
+                logo,
+                name,
+                chairman,
+                visiMisi,
+                address,
+                candidate: candidate_id
+            })
+
+            await this.repository.createQueryBuilder()
+                .update(Party)
+                .set(party)
+                .where('id = :id', { id })
+                .execute()
+
+            const getPartyWithCandidate = await this.repository.createQueryBuilder('party')
+                .leftJoinAndSelect('party.candidate', 'candidate')
+                .where('party.id = :id', { id })
+                .getMany()
+
+            return getPartyWithCandidate
         } catch (error) {
             throw error
         }
     }
-    async delete(id: number) : Promise<any> {
+    async delete(id: number): Promise<any> {
         try {
-            const partai = await partaiRepo.findOne({where: {id}})
-            await partaiRepo.remove(partai)
+            await this.repository.createQueryBuilder()
+            .delete()
+            .from(Party)
+            .where('id = :id', {id})
+            .execute()
         } catch (error) {
             throw error
         }

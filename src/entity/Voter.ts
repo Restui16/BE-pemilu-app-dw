@@ -1,4 +1,4 @@
-import { CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { User } from "./User"
 import { Candidate } from "./Candidate"
 
@@ -12,9 +12,9 @@ export class Voter {
     @JoinColumn()
     user: User
 
-    @OneToOne(() => Candidate)
+    @ManyToOne(() => Candidate)
     @JoinColumn()
-    candidate: Candidate
+    candidate: Candidate[]
 
     @CreateDateColumn()
     created_at: Date
